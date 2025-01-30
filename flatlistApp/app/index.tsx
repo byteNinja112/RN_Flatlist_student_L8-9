@@ -1,39 +1,26 @@
+import ListItem from "@/components/ListItem";
+import ListItemSeparator from "@/components/ListItemSeparator";
+import { useState } from "react";
 import {
+  FlatList,
+  StyleSheet,
   Text,
   View,
-  StyleSheet,
-  FlatList,
-  TouchableOpacity,
 } from "react-native";
-import colors from "../styles/colors";
 import defaultStyles from "../styles/defaultStyles";
-import { useState } from "react";
+import { dataType, DATA } from "@/data/appData";
 
 export default function Index() {
-
-  type dataType = {
-    id: string; // unique identifier for each element in a list (ex: student id number)
-    title: string; // what I display (ex: George [when there are multiple Georges])
-  }
-
-  const DATA: dataType[] = [
-    {id: "1", title: "First"},
-    {id: "2", title: "Second"},
-    {id: "3", title: "Third"},
-    {id: "4", title: "Fourth"},
-
-  ];
 
   const [selectedId, setSelectedId] = useState<string>("1")
 
   // create a simple function to call when an  item is selected
   // pass a parameter of the item that was clicked on
 
-  const selectedList = (item: dataType) => {
+  const handleRowPress = (item: dataType) => {
     console.log("Selected " + item.title)
     setSelectedId(item.id)
   }
-
 
   return (
     <View style={defaultStyles.container}>
@@ -45,13 +32,14 @@ export default function Index() {
           <FlatList
             data = {DATA}
             keyExtractor={(item: dataType) => item.id}
+            extraData={selectedId}
+            ItemSeparatorComponent={() => (<ListItemSeparator />)}
             renderItem={({ item }) => (
-              <TouchableOpacity onPress={() => selectedList(item)} >
-                <View style={[styles.titleContainer, 
-                  {backgroundColor: item.id === selectedId ? colors.primary : colors.secondary}]}>
-                  <Text style={[styles.titleText, {color: item.id === selectedId ? colors.text.light : colors.text.dark}]}>{item.title}</Text>
-                </View>
-              </TouchableOpacity>
+            <ListItem
+              item={item}
+              isSelected={item.id === selectedId}
+              onPress={handleRowPress}
+            />
             )} 
           />
         </View>
